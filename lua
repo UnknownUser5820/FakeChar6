@@ -595,7 +595,7 @@ game.Players.PlayerAdded:Connect(function(plr)
 		end
 	end)
 end)
-Player.Character = Character
+--Player.Character = Character
 local RI,WS,HR = 0,0,0
 local Leg1,R1,Leg2,R2 = -1.3,-13,-2,-6
 local lf,rf = -0.4,0
@@ -634,19 +634,18 @@ function system()
 			Sine = Sine + 1.5 --+ PlaybackLoudness/190 --*2
 			Sine2 = Sine / 5
 			coroutine.resume(coroutine.create(function()
-				--[[
+				
 
 if Player and Player.Character then 
 					local ch = Player.Character 
 					Player.Character=nil 
 					ch.Parent=nil
 				end
-]]
 				if Character == nil or Character.Parent ~= workspace or Character.Parent == nil or not Character then
 					Character = Instance.new("Model",workspace)
 					Character.Name = random2
 					Character.Archivable = true
-					Player.Character = Character
+					--Player.Character = Character
 				end
 				if Effects == nil or Effects.Parent ~= Character or Effects.Parent == nil or not Effects then
 					Effects = Instance.new("Folder",Character)
