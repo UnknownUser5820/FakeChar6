@@ -1363,7 +1363,7 @@ if Player and Player.Character then
 									AttachedCFrame = CFrame.new(0.5,-0.5,0),
 									Alpha = Alpha
 								};
-								CFrame = Cf(-0.05+0.06*Sin(Sine/56),0+0.08*Sin(Sine/45),0) * Angles(Rad(0),Rad(23),Rad(-5));
+								CFrame = Cf(-0.05-0.06*Sin(Sine/56),0+0.08*Sin(Sine/45),0) * Angles(Rad(0),Rad(23),Rad(-5));
 							})
 						end
 					end
