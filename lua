@@ -1318,7 +1318,7 @@ if Player and Player.Character then
 									AttachedCFrame = CFrame.new(0.5,-0.5,0),
 									Alpha = Alpha
 								};
-								CFrame = Cf(-0.2,-0.05+0.06*Sin(Sine/48),0.2) * Angles(Rad(0),Rad(0),Rad(-10));
+								CFrame = Cf(-0.5,-0.05+0.06*Sin(Sine/48),0.4) * Angles(Rad(0),Rad(0),Rad(-23));
 							})
 							CFrameAnimTable({
 								Part=LeftArm;
