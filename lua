@@ -1296,7 +1296,7 @@ if Player and Player.Character then
 									AttachedCFrame = CFrame.new(),
 									Alpha = Alpha
 								};
-								CFrame = Cf(0, 0-0.09*Sin(Sine/45), 0) *  Angles(Rad(0), Rad(180+5*Sin(Sine/45)), Rad(0));
+								CFrame = Cf(0, 0-0.09*Sin(Sine/45), 0) *  Angles(Rad(0), Rad(180+25*Sin(Sine/45)), Rad(0));
 							})
 							CFrameAnimTable({
 								Part=Head;
@@ -1351,7 +1351,7 @@ if Player and Player.Character then
 									AttachedCFrame = CFrame.new(-0.5,-0.5,0),
 									Alpha = Alpha
 								};
-								CFrame = Cf(0.05,0+0.08*Sin(Sine/45),0+0.1*Sin(Sine/45)) * Angles(Rad(0),Rad(-8-25*Sin(Sine/45)),Rad(5));
+								CFrame = Cf(0.05,0+0.08*Sin(Sine/45),0+0.3*Sin(Sine/45)) * Angles(Rad(0),Rad(-8+25*Sin(Sine/45)),Rad(5));
 							})
 							CFrameAnimTable({
 								Part=LeftLeg;
@@ -1362,7 +1362,7 @@ if Player and Player.Character then
 									AttachedCFrame = CFrame.new(0.5,-0.5,0),
 									Alpha = Alpha
 								};
-								CFrame = Cf(0.06,0+0.09*Sin(Sine/45),0-0.1*Sin(Sine/45)) * Angles(Rad(0),Rad(23+25*Sin(Sine/45)),Rad(-5));
+								CFrame = Cf(0.06,0+0.09*Sin(Sine/45),0+0.3*Sin(Sine/45)) * Angles(Rad(0),Rad(23-25*Sin(Sine/45)),Rad(-5));
 							})
 						end
 					end
