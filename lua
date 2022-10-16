@@ -2484,7 +2484,7 @@ function ThrowBomb()
 			local Hit,Pos = Raycast(Part.Position,Part.CFrame.lookVector,5,Character)
 			if Hit then break end	
 		end
-		AOETime(Part.Position,10)
+		AOETime(Part.Position,30)
 		for i = 1,12 do
 			WACKYEFFECT2({
 				Time = 60,
