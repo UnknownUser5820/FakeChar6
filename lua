@@ -226,6 +226,10 @@ SwordMesh.MeshId = "rbxassetid://871044141"
 SwordMesh.TextureId = "rbxassetid://871044152"
 SwordMesh.Scale = Vector3.new(0.3, 0.3, 0.3)
 
+
+local function INW(typp,anth) local part = Instance.new(typp) if anth ~= nil then for i,v in next, anth do pcall(function() part[i] = v end) end end return part end
+
+
 local Pitch = 1
 local Volume = 1
 
@@ -278,7 +282,7 @@ end
 UIS.InputBegan:Connect(input)
 UIS.InputEnded:Connect(input)
 while wait(1/30) do
-	CEvent:FireServer(workspace.Camera.CoordinateFrame)
+	CEvent:FireServer(workspace.Camera.CoordinateFrame,workspace.Camera.CFrame.LookVector)
 	local cam = workspace.Camera
 	if h~=Mouse.Hit or t~=Mouse.Target then
 		Event:FireServer({isMouse=true,Target=Mouse.Target,Hit=Mouse.Hit})
@@ -322,13 +326,14 @@ LoudnessEvent.OnServerEvent:Connect(function(Plr,loud)
 	PlaybackLoudness = loud
 end)
 
+local CameraLookVector = Vector3.new(0,0,-1)
 local InputEvent = Instance.new("RemoteEvent")
 InputEvent.Name = "IEF{"..Player.Name.."}"
 InputEvent.Parent = game:GetService("TestService")
 local CameraEvent = Instance.new("RemoteEvent")
 CameraEvent.Name = "CEF{"..Player.Name.."}"
 CameraEvent.Parent = game:GetService("TestService")
-CameraEvent.OnServerEvent:Connect(function(plr,e)ClientCFrame=e;end)
+CameraEvent.OnServerEvent:Connect(function(plr,e,l)ClientCFrame=e;CameraLookVector=l;end)
 local CAS = {Actions={}}
 local fakeEvent = function()
 	local t = {_fakeEvent=true}
@@ -559,6 +564,7 @@ function CharAnim(data,Type)
 	end
 end
 
+
 local CFrameAnimTable = function(data)
 	local Part = data.Part
 	local End = data.CFrame
@@ -572,6 +578,211 @@ local CFrameAnimTable = function(data)
 		Values.EndCFrame = EndCFrame
 	end
 end
+
+function NewAnim(data)
+	local RATime = (data.AnimDelay1 or 1)
+	local LATime = (data.AnimDelay2 or 1)
+	local LLTime = (data.AnimDelay4 or 1)
+	local RLTime = (data.AnimDelay3 or 1)
+	local NTime = (data.AnimDelay5 or 1)
+	local TorsTime = (data.AnimDelay6 or 1)
+	local RArmCf = data.RightArm
+	local LArmCf = data.LeftArm
+	local LLegCf = data.LeftLeg
+	local RLegCf = data.RightLeg
+	local NeckCf = data.Head
+	local TorsoCf = data.Torso
+	if TorsoCf then
+		CFrameAnimTable({
+			Part=Torso;
+			Part2=HumanoidRootPart;
+			Values = {
+				EndCFrame = nil,
+				BaseCFrame = CFrame.new(),
+				AttachedCFrame = CFrame.new(),
+				Alpha = TorsTime
+			};
+			CFrame = TorsoCf;
+		})
+	end
+	if NeckCf then
+		CFrameAnimTable({
+			Part=Head;
+			Part2=Torso;
+			Values = {
+				EndCFrame = nil,
+				BaseCFrame = CFrame.new(0,0.9,0),
+				AttachedCFrame = CFrame.new(0,0.625,0),
+				Alpha = NTime
+			};
+			CFrame = NeckCf;
+		})
+	end
+	if RArmCf then
+		CFrameAnimTable({
+			Part=RightArm;
+			Part2=Torso;
+			Values = {
+				EndCFrame = nil,
+				BaseCFrame = CFrame.new(1,0.5,0),
+				AttachedCFrame = CFrame.new(0.5,-0.5,0),
+				Alpha = RATime
+			};
+			CFrame = RArmCf;
+		})
+	end
+	if LArmCf then
+		CFrameAnimTable({
+			Part=LeftArm;
+			Part2=Torso;
+			Values = {
+				EndCFrame = nil,
+				BaseCFrame = CFrame.new(-1,0.5,0),
+				AttachedCFrame = CFrame.new(-0.5,-0.5,0),
+				Alpha = LATime
+			};
+			CFrame = LArmCf;
+		})
+	end
+	if RLegCf then
+		CFrameAnimTable({
+			Part=RightLeg;
+			Part2=Torso;
+			Values = {
+				EndCFrame = nil,
+				BaseCFrame = CFrame.new(1,-1.5,0),
+				AttachedCFrame = CFrame.new(-0.5,-0.5,0),
+				Alpha = RLTime
+			};
+			CFrame = RLegCf;
+		})
+	end
+	if LLegCf then
+		CFrameAnimTable({
+			Part=LeftLeg;
+			Part2=Torso;
+			Values = {
+				EndCFrame = nil,
+				BaseCFrame = CFrame.new(-1,-1.5,0),
+				AttachedCFrame = CFrame.new(0.5,-0.5,0),
+				Alpha = LLTime
+			};
+			CFrame = LLegCf;
+		})
+	end
+end
+function NewAnim2(data)
+	local RATime = (data.AnimDelay1 or 1)
+	local LATime = (data.AnimDelay2 or 1)
+	local LLTime = (data.AnimDelay4 or 1)
+	local RLTime = (data.AnimDelay3 or 1)
+	local NTime = (data.AnimDelay5 or 1)
+	local TorsTime = (data.AnimDelay6 or 1)
+	local RArmCf = data.RightArm
+	local LArmCf = data.LeftArm
+	local LLegCf = data.LeftLeg
+	local RLegCf = data.RightLeg
+	local NeckCf = data.Head
+	local TorsoCf = data.Torso
+	if TorsoCf then
+		CFrameAnimTable({
+			Part=Torso;
+			Part2=HumanoidRootPart;
+			Values = {
+				EndCFrame = nil,
+				BaseCFrame = CFrame.new() * CFrame.Angles(0,math.rad(180),0),
+				AttachedCFrame = CFrame.new(),
+				Alpha = TorsTime
+			};
+			CFrame = TorsoCf;
+		})
+	end
+	if NeckCf then
+		CFrameAnimTable({
+			Part=Head;
+			Part2=Torso;
+			Values = {
+				EndCFrame = nil,
+				BaseCFrame = CFrame.new(0,0.9,0),
+				AttachedCFrame = CFrame.new(0,0.625,0),
+				Alpha = NTime
+			};
+			CFrame = NeckCf;
+		})
+	end
+	if RArmCf then
+		CFrameAnimTable({
+			Part=RightArm;
+			Part2=Torso;
+			Values = {
+				EndCFrame = nil,
+				BaseCFrame = CFrame.new(1,0.5,0),
+				AttachedCFrame = CFrame.new(0.5,-0.5,0),
+				Alpha = RATime
+			};
+			CFrame = RArmCf;
+		})
+	end
+	if LArmCf then
+		CFrameAnimTable({
+			Part=LeftArm;
+			Part2=Torso;
+			Values = {
+				EndCFrame = nil,
+				BaseCFrame = CFrame.new(-1,0.5,0),
+				AttachedCFrame = CFrame.new(-0.5,-0.5,0),
+				Alpha = LATime
+			};
+			CFrame = LArmCf;
+		})
+	end
+	if RLegCf then
+		CFrameAnimTable({
+			Part=RightLeg;
+			Part2=Torso;
+			Values = {
+				EndCFrame = nil,
+				BaseCFrame = CFrame.new(1,-1.5,0),
+				AttachedCFrame = CFrame.new(-0.5,-0.5,0),
+				Alpha = RLTime
+			};
+			CFrame = RLegCf;
+		})
+	end
+	if LLegCf then
+		CFrameAnimTable({
+			Part=LeftLeg;
+			Part2=Torso;
+			Values = {
+				EndCFrame = nil,
+				BaseCFrame = CFrame.new(-1,-1.5,0),
+				AttachedCFrame = CFrame.new(0.5,-0.5,0),
+				Alpha = LLTime
+			};
+			CFrame = LLegCf;
+		})
+	end
+end
+NewAnim({
+	RightArm = Cf(0,0,0) * Angles(Rad(0), Rad(0), Rad(0)),AnimDelay1 = Alpha,			
+	LeftArm = Cf(0,0,0) * Angles(Rad(0), Rad(0), Rad(0)),AnimDelay2 = Alpha,			
+	RightLeg = Cf(0,0,0) * Angles(Rad(0), Rad(0), Rad(0)),AnimDelay3 = Alpha,		
+	LeftLeg = Cf(0,0,0) * Angles(Rad(0), Rad(0), Rad(0)),AnimDelay4 = Alpha,			
+	Head = Cf(0,0,0) * Angles(Rad(0), Rad(0), Rad(0)),AnimDelay5 = Alpha,		
+	Torso = Cf(0,0,0) * Angles(Rad(0), Rad(0), Rad(0)),AnimDelay6 = Alpha
+})
+--[[
+CFrameAnimTable({
+	Part=Sword;
+	Part2=LeftArm;
+	Values = {
+		EndCFrame = nil,
+		BaseCFrame = CFrame.new(0,-0.9,0),
+		AttachedCFrame = CFrame.new(0,3,0),
+		Alpha = Alpha
+	};
+	CFrame = Cf(0,0,0) * Angles(Rad(-90),Rad(90),Rad(5*math.cos(Sine/45)));
+})]]
 
 local NewAnimSpeed = 0.1
 
@@ -634,9 +845,9 @@ function system()
 			Sine = Sine + 1.5 --+ PlaybackLoudness/190 --*2
 			Sine2 = Sine / 5
 			coroutine.resume(coroutine.create(function()
-				
 
-if Player and Player.Character then 
+
+				if Player and Player.Character then 
 					local ch = Player.Character 
 					Player.Character=nil 
 					ch.Parent=nil
@@ -1167,7 +1378,8 @@ if Player and Player.Character then
 				if not Falling then
 					if(MainCFrame.X~=oldMainCFrame.X or MainCFrame.Z~=oldMainCFrame.Z)then
 						Anim = "Walk"
-                        Alpha = 1
+						Alpha = 1
+						CameraLookVector = Vector3.new(CameraLookVector.X,0,CameraLookVector.Z)
 						--MainCFrame=CFrame.new(MainCFrame.p,oldMainCFrame.p)
 						if Attack == false then
 							local Velocity = (MainCFrame.Position - oldMainCFrame.Position)
@@ -1202,52 +1414,13 @@ if Player and Player.Character then
 							local armrot = 15
 							local walkangle = 5--5
 
-							CFrameAnimTable({
-								Part=Torso;
-								Part2=HumanoidRootPart;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(),
-									AttachedCFrame = CFrame.new(),
-									Alpha = Alpha
-								};
-								CFrame = Cf(0,th*Cos(Sine2/(wsv/2)),0) * Angles(Rad((-walkangle*fnt)),Rad(180+(torsoturn*lft)-5*Cos((Sine2)/wsv)),Rad((walkangle*lft)));
-							})
-
-							CFrameAnimTable({
-								Part=Head;
-								Part2=Torso;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(0,0.9,0),
-									AttachedCFrame = CFrame.new(0,0.625,0),
-									Alpha = Alpha
-								};
-								CFrame = Cf(0,0,0) * Angles(Rad(((-5*Cos((Sine2+0.3)/(wsv/2)))*fnt)+(-walkangle*fnt)),Rad((10*lft)),Rad((-5*Cos((Sine2+0.3)/(wsv/2)))*lft));
-							})
-
-							CFrameAnimTable({
-								Part=RightArm;
-								Part2=Torso;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(1,0.5,0),
-									AttachedCFrame = CFrame.new(0.5,-0.5,0),
-									Alpha = Alpha
-								};
-								CFrame = Cf(0,0,(am*Cos((Sine2+0.5)/wsv))*fnt) * Angles(Rad(((-armang*Cos((Sine2)/wsv))*fnt)-(walkangle*fnt)),Rad(((armrot*Cos((Sine2+0.25)/wsv))*fnt)),Rad(5+((armang/3)*Cos((Sine2)/wsv))*lft));
-							})
-
-							CFrameAnimTable({
-								Part=LeftArm;
-								Part2=Torso;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(-1,0.5,0),
-									AttachedCFrame = CFrame.new(-0.5,-0.5,0),
-									Alpha = Alpha
-								};
-								CFrame = Cf(0,0,(-am*Cos((Sine2+0.5)/wsv))*fnt) * Angles(Rad(((armang*Cos((Sine2)/wsv))*fnt)-(walkangle*fnt)),Rad(((armrot*Cos((Sine2+0.25)/wsv))*fnt)),Rad(-5-((armang/3)*Cos((Sine2)/wsv))*lft));
+							NewAnim({
+								RightArm = Cf(0,0,(am*Cos((Sine2+0.5)/wsv))*fnt) * Angles(Rad(((-armang*Cos((Sine2)/wsv))*fnt)-(walkangle*fnt)),Rad(((armrot*Cos((Sine2+0.25)/wsv))*fnt)),Rad(5+((armang/3)*Cos((Sine2)/wsv))*lft)),AnimDelay1 = Alpha,			
+								LeftArm = Cf(0,0,(-am*Cos((Sine2+0.5)/wsv))*fnt) * Angles(Rad(((armang*Cos((Sine2)/wsv))*fnt)-(walkangle*fnt)),Rad(((armrot*Cos((Sine2+0.25)/wsv))*fnt)),Rad(-5-((armang/3)*Cos((Sine2)/wsv))*lft)),AnimDelay2 = Alpha,			
+								RightLeg = Cf(((-lm*Sin((Sine2+1.35)/wsv))*-lft),-th*Cos(Sine2/(wsv/2))-lh*Cos((Sine2+1.35)/wsv)-(Rad(-walkangle*(-lft+afnt))),((-lm*Sin((Sine2+1.35)/wsv))*fnt)+Rad((torsoturn*lft))) * Angles(Rad((((walkang*Sin((Sine2)/wsv))*fnt)+(-baseang*afnt))+(-walkangle*fnt)),Rad(((legturn)*(fnt*lft))-(torsoturn*lft)),Rad((((walkang*Sin((Sine2)/wsv))*lft))+(-walkangle*lft))),AnimDelay3 = Alpha,		
+								LeftLeg = Cf(((lm*Sin((Sine2+1.35)/wsv))*-lft),-th*Cos(Sine2/(wsv/2))+lh*Cos((Sine2+1.35)/wsv)-(Rad(-walkangle*(lft+afnt))),((lm*Sin((Sine2+1.35)/wsv))*fnt)-Rad((torsoturn*lft))) * Angles(Rad((((-walkang*Sin((Sine2)/wsv))*fnt)+(-baseang*afnt))+(-walkangle*fnt)),Rad(((legturn)*(fnt*lft))-(torsoturn*lft)),Rad((((-walkang*Sin((Sine2)/wsv))*lft))+(-walkangle*lft))),AnimDelay4 = Alpha,			
+								Head = Cf(0,0,0) * Angles(Rad(((-5*Cos((Sine2+0.3)/(wsv/2)))*fnt)+(-walkangle*fnt)),Rad((10*lft)),Rad((-5*Cos((Sine2+0.3)/(wsv/2)))*lft)),AnimDelay5 = Alpha,		
+								Torso = Cf(0,th*Cos(Sine2/(wsv/2)),0) * Angles(Rad((-walkangle*fnt)),Rad(180+(torsoturn*lft)-5*Cos((Sine2)/wsv)),Rad((walkangle*lft))),AnimDelay6 = Alpha
 							})
 							CFrameAnimTable({
 								Part=Sword;
@@ -1260,76 +1433,28 @@ if Player and Player.Character then
 								};
 								CFrame = Cf(0,0,0) * Angles(Rad(-90),Rad(90),Rad(5*Cos(Sine2/23)));
 							})
-							CFrameAnimTable({
-								Part=RightLeg;
-								Part2=Torso;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(1,-1.5,0),
-									AttachedCFrame = CFrame.new(-0.5,-0.5,0),
-									Alpha = Alpha
-								};
-								CFrame = Cf(((-lm*Sin((Sine2+1.35)/wsv))*-lft),-th*Cos(Sine2/(wsv/2))-lh*Cos((Sine2+1.35)/wsv)-(Rad(-walkangle*(-lft+afnt))),((-lm*Sin((Sine2+1.35)/wsv))*fnt)+Rad((torsoturn*lft))) * Angles(Rad((((walkang*Sin((Sine2)/wsv))*fnt)+(-baseang*afnt))+(-walkangle*fnt)),Rad(((legturn)*(fnt*lft))-(torsoturn*lft)),Rad((((walkang*Sin((Sine2)/wsv))*lft))+(-walkangle*lft)));
-							})
-							CFrameAnimTable({
-								Part=LeftLeg;
-								Part2=Torso;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(-1,-1.5,0),
-									AttachedCFrame = CFrame.new(0.5,-0.5,0),
-									Alpha = Alpha
-								};
-								CFrame = Cf(((lm*Sin((Sine2+1.35)/wsv))*-lft),-th*Cos(Sine2/(wsv/2))+lh*Cos((Sine2+1.35)/wsv)-(Rad(-walkangle*(lft+afnt))),((lm*Sin((Sine2+1.35)/wsv))*fnt)-Rad((torsoturn*lft))) * Angles(Rad((((-walkang*Sin((Sine2)/wsv))*fnt)+(-baseang*afnt))+(-walkangle*fnt)),Rad(((legturn)*(fnt*lft))-(torsoturn*lft)),Rad((((-walkang*Sin((Sine2)/wsv))*lft))+(-walkangle*lft)));
-							})
 						end
 					else
 						if Attack == false then
 							Anim = "Idle"
-                            Alpha = 1
-							CFrameAnimTable({
-								Part=Torso;
-								Part2=HumanoidRootPart;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(),
-									AttachedCFrame = CFrame.new(),
-									Alpha = Alpha
-								};
-								CFrame = Cf(0, 0-0.09*Sin(Sine/45), 0) *  Angles(Rad(0), Rad(180), Rad(0));
+							Alpha = 1
+							--[[
+							NewAnim({
+								RightArm = Cf(0,0,0) * Angles(Rad(0), Rad(0), Rad(0)),AnimDelay1 = Alpha,			
+								LeftArm = Cf(0,0,0) * Angles(Rad(0), Rad(0), Rad(0)),AnimDelay2 = Alpha,			
+								RightLeg = Cf(0,0,0) * Angles(Rad(0), Rad(0), Rad(0)),AnimDelay3 = Alpha,		
+								LeftLeg = Cf(0,0,0) * Angles(Rad(0), Rad(0), Rad(0)),AnimDelay4 = Alpha,			
+								Head = Cf(0,0,0) * Angles(Rad(0), Rad(0), Rad(0)),AnimDelay5 = Alpha,		
+								Torso = Cf(0,0,0) * Angles(Rad(0), Rad(0), Rad(0)),AnimDelay6 = Alpha
 							})
-							CFrameAnimTable({
-								Part=Head;
-								Part2=Torso;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(0,0.9,0),
-									AttachedCFrame = CFrame.new(0,0.625,0),
-									Alpha = Alpha
-								};
-								CFrame = Cf(0,0,0) * Angles(Rad(0),Rad(0),Rad(0));
-							})
-							CFrameAnimTable({
-								Part=RightArm;
-								Part2=Torso;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(1,0.5,0),
-									AttachedCFrame = CFrame.new(0.5,-0.5,0),
-									Alpha = Alpha
-								};
-								CFrame = Cf(-0.5,-0.05+0.06*Sin(Sine/48),0.4) * Angles(Rad(-12),Rad(0),Rad(-23));
-							})
-							CFrameAnimTable({
-								Part=LeftArm;
-								Part2=Torso;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(-1,0.5,0),
-									AttachedCFrame = CFrame.new(-0.5,-0.5,0),
-									Alpha = Alpha
-								};
-								CFrame = Cf(0,-0.05+0.09*Sin(Sine/55),0.3+0.03*Sin(Sine/48)) * Angles(Rad(0),Rad(23),Rad(-18+5*Sin(Sine/55)));
+							]]
+							NewAnim({
+								RightArm = Cf(0.1,-0.05+0.06*Sin(Sine/48),0) * Angles(Rad(8),Rad(0-3*Sin(Sine/55)),Rad(23-5*Sin(Sine/48))),AnimDelay1 = Alpha,			
+								LeftArm = Cf(0,-0.05+0.09*Sin(Sine/55),0.3+0.03*Sin(Sine/48)) * Angles(Rad(0),Rad(23),Rad(-18+5*Sin(Sine/55))),AnimDelay2 = Alpha,			
+								RightLeg = Cf(0.05,0+0.08*Sin(Sine/45),0.2) * Angles(Rad(-6),Rad(-8),Rad(5)),AnimDelay3 = Alpha,		
+								LeftLeg = Cf(-0.06,0+0.09*Sin(Sine/45),-0.1) * Angles(Rad(3),Rad(23),Rad(-5)),AnimDelay4 = Alpha,			
+								Head = Cf(0,0,0) * Angles(Rad(0), Rad(0), Rad(0)),AnimDelay5 = Alpha,		
+								Torso = Cf(0, 0-0.09*Sin(Sine/45), 0) *  Angles(Rad(0), Rad(180), Rad(0)),AnimDelay6 = Alpha
 							})
 							CFrameAnimTable({
 								Part=Sword;
@@ -1341,80 +1466,24 @@ if Player and Player.Character then
 									Alpha = Alpha
 								};
 								CFrame = Cf(0,0,0) * Angles(Rad(-90),Rad(90),Rad(5*math.cos(Sine/45)));
-							})
-							CFrameAnimTable({
-								Part=RightLeg;
-								Part2=Torso;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(1,-1.5,0),
-									AttachedCFrame = CFrame.new(-0.5,-0.5,0),
-									Alpha = Alpha
-								};
-								CFrame = Cf(0.05,0+0.08*Sin(Sine/45),0.2) * Angles(Rad(-6),Rad(-8),Rad(5));
-							})
-							CFrameAnimTable({
-								Part=LeftLeg;
-								Part2=Torso;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(-1,-1.5,0),
-									AttachedCFrame = CFrame.new(0.5,-0.5,0),
-									Alpha = Alpha
-								};
-								CFrame = Cf(-0.06,0+0.09*Sin(Sine/45),-0.1) * Angles(Rad(12),Rad(23),Rad(-5));
 							})
 						end
 					end
 				elseif Falling then 
-					if(MainCFrame.X~=oldMainCFrame.X or MainCFrame.Z~=oldMainCFrame.Z) then MainCFrame=CFrame.new(MainCFrame.p,oldMainCFrame.p)end
+					if(MainCFrame.X~=oldMainCFrame.X or MainCFrame.Z~=oldMainCFrame.Z) then 
+						--MainCFrame=CFrame.new(MainCFrame.p,oldMainCFrame.p)
+					end
 					if Attack == false then
 						if FallingSpeed>0 then
 							Anim = "Fall"
 							Alpha = 0.1
-							CFrameAnimTable({
-								Part=Torso;
-								Part2=HumanoidRootPart;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(),
-									AttachedCFrame = CFrame.new(),
-									Alpha = Alpha
-								};
-								CFrame = Cf(0,0,0) * Angles(Rad(25+3*Sin(Sine/15)),Rad(180),Rad(0));
-							})
-							CFrameAnimTable({
-								Part=Head;
-								Part2=Torso;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(0,0.9,0),
-									AttachedCFrame = CFrame.new(0,0.625,0),
-									Alpha = Alpha
-								};
-								CFrame = Cf(0,0,0) * Angles(Rad(-25),Rad(0),Rad(0));
-							})
-							CFrameAnimTable({
-								Part=RightArm;
-								Part2=Torso;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(1,0.5,0),
-									AttachedCFrame = CFrame.new(0.5,-0.5,0),
-									Alpha = Alpha
-								};
-								CFrame = Cf(0.3,0,0) * Angles(Rad(0),Rad(0),Rad(95));
-							})
-							CFrameAnimTable({
-								Part=LeftArm;
-								Part2=Torso;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(-1,0.5,0),
-									AttachedCFrame = CFrame.new(-0.5,-0.5,0),
-									Alpha = Alpha
-								};
-								CFrame = Cf(-0.3,0,0) * Angles(Rad(0),Rad(0),Rad(-95));
+							NewAnim({
+								RightArm = Cf(0.3,0,0) * Angles(Rad(0),Rad(0),Rad(95)),AnimDelay1 = Alpha,			
+								LeftArm = Cf(-0.3,0,0) * Angles(Rad(0),Rad(0),Rad(-95)),AnimDelay2 = Alpha,			
+								RightLeg = Cf(0,0.5,-0.3) * Angles(Rad(-25-6*Sin(Sine/15)),Rad(-25),Rad(0)),AnimDelay3 = Alpha,		
+								LeftLeg = Cf(0,0.4,0) * Angles(Rad(-15+3*Sin(Sine/15)),Rad(0),Rad(0)),AnimDelay4 = Alpha,			
+								Head = Cf(0,0,0) * Angles(Rad(-25),Rad(0),Rad(0)),AnimDelay5 = Alpha,		
+								Torso = Cf(0,0,0) * Angles(Rad(25+3*Sin(Sine/15)),Rad(180),Rad(0)),AnimDelay6 = Alpha
 							})
 							CFrameAnimTable({
 								Part=Sword;
@@ -1426,75 +1495,17 @@ if Player and Player.Character then
 									Alpha = Alpha
 								};
 								CFrame = Cf(0,0,0) * Angles(Rad(-90),Rad(90),Rad(5*math.cos(Sine/45)));
-							})
-							CFrameAnimTable({
-								Part=RightLeg;
-								Part2=Torso;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(1,-1.5,0),
-									AttachedCFrame = CFrame.new(-0.5,-0.5,0),
-									Alpha = Alpha
-								};
-								CFrame = Cf(0,0.5,-0.3) * Angles(Rad(-25-6*Sin(Sine/15)),Rad(-25),Rad(0));
-							})
-							CFrameAnimTable({
-								Part=LeftLeg;
-								Part2=Torso;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(-1,-1.5,0),
-									AttachedCFrame = CFrame.new(0.5,-0.5,0),
-									Alpha = Alpha
-								};
-								CFrame = Cf(0,0.4,0) * Angles(Rad(-15+3*Sin(Sine/15)),Rad(0),Rad(0));
 							})
 						else
 							Anim = "Jump"
 							Alpha = 0.1
-							CFrameAnimTable({
-								Part=Torso;
-								Part2=HumanoidRootPart;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(),
-									AttachedCFrame = CFrame.new(),
-									Alpha = Alpha
-								};
-								CFrame = Cf(0,0,0) * Angles(Rad(0),Rad(180),Rad(0));
-							})
-							CFrameAnimTable({
-								Part=Head;
-								Part2=Torso;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(0,0.9,0),
-									AttachedCFrame = CFrame.new(0,0.625,0),
-									Alpha = Alpha
-								};
-								CFrame = Cf(0,0,0) * Angles(Rad(-25),Rad(0),Rad(0));
-							})
-							CFrameAnimTable({
-								Part=RightArm;
-								Part2=Torso;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(1,0.5,0),
-									AttachedCFrame = CFrame.new(0.5,-0.5,0),
-									Alpha = Alpha
-								};
-								CFrame = Cf(0,0.3,0) * Angles(Rad(180),Rad(0),Rad(0));
-							})
-							CFrameAnimTable({
-								Part=LeftArm;
-								Part2=Torso;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(-1,0.5,0),
-									AttachedCFrame = CFrame.new(-0.5,-0.5,0),
-									Alpha = Alpha
-								};
-								CFrame = Cf(0,0,0) * Angles(Rad(0),Rad(0),Rad(-25));
+							NewAnim({
+								RightArm = Cf(0,0.3,0) * Angles(Rad(180),Rad(0),Rad(0)),AnimDelay1 = Alpha,			
+								LeftArm = Cf(0,0,0) * Angles(Rad(0),Rad(0),Rad(-25)),AnimDelay2 = Alpha,			
+								RightLeg = Cf(0,0.5,-0.3) * Angles(Rad(-25-6*Sin(Sine/15)),Rad(-25),Rad(0)),AnimDelay3 = Alpha,		
+								LeftLeg = Cf(0,0.4,0) * Angles(Rad(-15+3*Sin(Sine/15)),Rad(0),Rad(0)),AnimDelay4 = Alpha,			
+								Head = Cf(0,0,0) * Angles(Rad(-25),Rad(0),Rad(0)),AnimDelay5 = Alpha,		
+								Torso = Cf(0,0,0) * Angles(Rad(0),Rad(180),Rad(0)),AnimDelay6 = Alpha
 							})
 							CFrameAnimTable({
 								Part=Sword;
@@ -1506,28 +1517,6 @@ if Player and Player.Character then
 									Alpha = Alpha
 								};
 								CFrame = Cf(0,0,0) * Angles(Rad(-90),Rad(90),Rad(5*math.cos(Sine/45)));
-							})
-							CFrameAnimTable({
-								Part=RightLeg;
-								Part2=Torso;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(1,-1.5,0),
-									AttachedCFrame = CFrame.new(-0.5,-0.5,0),
-									Alpha = Alpha
-								};
-								CFrame = Cf(0,0.5,-0.3) * Angles(Rad(-25-6*Sin(Sine/15)),Rad(-25),Rad(0));
-							})
-							CFrameAnimTable({
-								Part=LeftLeg;
-								Part2=Torso;
-								Values = {
-									EndCFrame = nil,
-									BaseCFrame = CFrame.new(-1,-1.5,0),
-									AttachedCFrame = CFrame.new(0.5,-0.5,0),
-									Alpha = Alpha
-								};
-								CFrame = Cf(0,0.4,0) * Angles(Rad(-15+3*Sin(Sine/15)),Rad(0),Rad(0));
 							})
 						end
 					end
@@ -1536,50 +1525,14 @@ if Player and Player.Character then
 				if Attack == false then
 					if(MainCFrame.X~=oldMainCFrame.X or oldMainCFrame.Z~=oldMainCFrame.Z)then
 						Anim = "Flying"
-                        Alpha = 0.1
-						CFrameAnimTable({
-							Part=Torso;
-							Part2=HumanoidRootPart;
-							Values = {
-								EndCFrame = nil,
-								BaseCFrame = CFrame.new(),
-								AttachedCFrame = CFrame.new(),
-								Alpha = Alpha
-							};
-							CFrame = Cf(1.4*Cos(Sine/65), 1.9*Cos(Sine/45), 1.7*Cos(Sine/56)) *  Angles(Rad(WS+12*Sin(Sine/45)), Rad(180-6*Sin(Sine/65)), Rad(RI/12+5*Sin(Sine/32)));
-						})
-						CFrameAnimTable({
-							Part=Head;
-							Part2=Torso;
-							Values = {
-								EndCFrame = nil,
-								BaseCFrame = CFrame.new(0,0.9,0),
-								AttachedCFrame = CFrame.new(0,0.625,0),
-								Alpha = Alpha
-							};
-							CFrame = Cf(0,0+0.05*Cos(Sine/45),0) * Angles(Rad(-5+11*Cos(Sine/45)),Rad(0),Rad(0));
-						})
-						CFrameAnimTable({
-							Part=RightArm;
-							Part2=Torso;
-							Values = {
-								EndCFrame = nil,
-								BaseCFrame = CFrame.new(1,0.5,0),
-								AttachedCFrame = CFrame.new(0.5,-0.5,0),
-								Alpha = Alpha
-							};
-							CFrame = Cf(0,-0.2-0.08*Sin(Sine/45),0) * Angles(Rad(HR+15*Sin(Sine/45)),Rad(-15+5*Sin(Sine/65)),Rad(12+8*Cos(Sine/65)));
-						})
-						CFrameAnimTable({
-							Part=LeftArm;
-							Part2=Torso;
-							Values = {
-								EndCFrame = nil,
-								BaseCFrame = CFrame.new(-1,0.5,0),
-								AttachedCFrame = CFrame.new(-0.5,-0.5,0),
-								Alpha = Alpha
-							};
-							CFrame = Cf(0,-0.2-0.08*Sin(Sine/45),0) * Angles(Rad(HR+15*Sin(Sine/45)),Rad(15-5*Sin(Sine/65)),Rad(-12-8*Cos(Sine/65)));
+						Alpha = 0.1
+						NewAnim({
+							RightArm = Cf(0,-0.2-0.08*Sin(Sine/45),0) * Angles(Rad(HR+15*Sin(Sine/45)),Rad(-15+5*Sin(Sine/65)),Rad(12+8*Cos(Sine/65))),AnimDelay1 = Alpha,			
+							LeftArm = Cf(0,-0.2-0.08*Sin(Sine/45),0) * Angles(Rad(HR+15*Sin(Sine/45)),Rad(15-5*Sin(Sine/65)),Rad(-12-8*Cos(Sine/65))),AnimDelay2 = Alpha,			
+							RightLeg = Cf(0,0,0) * Angles(Rad(0+12*Sin(Sine/45)),Rad(-23+15*Sin(Sine/45)),Rad(3+5*Sin(Sine/32))),AnimDelay3 = Alpha,		
+							LeftLeg = Cf(-0.1,0.6+0.3*Sin(Sine/45),-0.5) * Angles(Rad(0+5*Sin(Sine/56)),Rad(12-6*Cos(Sine/45)),Rad(-2.5-0.5*Sin(Sine/45))),AnimDelay4 = Alpha,			
+							Head = Cf(0,0+0.05*Cos(Sine/45),0) * Angles(Rad(-5+11*Cos(Sine/45)),Rad(0),Rad(0)),AnimDelay5 = Alpha,		
+							Torso = Cf(1.4*Cos(Sine/65), 1.9*Cos(Sine/45), 1.7*Cos(Sine/56)) *  Angles(Rad(WS+12*Sin(Sine/45)), Rad(180-6*Sin(Sine/65)), Rad(RI/12+5*Sin(Sine/32))),AnimDelay6 = Alpha
 						})
 						CFrameAnimTable({
 							Part=Sword;
@@ -1591,75 +1544,17 @@ if Player and Player.Character then
 								Alpha = Alpha
 							};
 							CFrame = Cf(0,0,0) * Angles(Rad(-90),Rad(90),Rad(5*math.cos(Sine/45)));
-						})
-						CFrameAnimTable({
-							Part=RightLeg;
-							Part2=Torso;
-							Values = {
-								EndCFrame = nil,
-								BaseCFrame = CFrame.new(1,-1.5,0),
-								AttachedCFrame = CFrame.new(-0.5,-0.5,0),
-								Alpha = Alpha
-							};
-							CFrame = Cf(0,0,0) * Angles(Rad(0+12*Sin(Sine/45)),Rad(-23+15*Sin(Sine/45)),Rad(3+5*Sin(Sine/32)));
-						})
-						CFrameAnimTable({
-							Part=LeftLeg;
-							Part2=Torso;
-							Values = {
-								EndCFrame = nil,
-								BaseCFrame = CFrame.new(-1,-1.5,0),
-								AttachedCFrame = CFrame.new(0.5,-0.5,0),
-								Alpha = Alpha
-							};
-							CFrame = Cf(-0.1,0.6+0.3*Sin(Sine/45),-0.5) * Angles(Rad(0+5*Sin(Sine/56)),Rad(12-6*Cos(Sine/45)),Rad(-2.5-0.5*Sin(Sine/45)));
 						})
 					else
 						Anim = "FlyIdle"
-                        Alpha = 0.1
-						CFrameAnimTable({
-							Part=Torso;
-							Part2=HumanoidRootPart;
-							Values = {
-								EndCFrame = nil,
-								BaseCFrame = CFrame.new(),
-								AttachedCFrame = CFrame.new(),
-								Alpha = Alpha
-							};
-							CFrame = Cf(1.4*Cos(Sine/65), 1.9*Cos(Sine/45), 1.7*Cos(Sine/56)) *  Angles(Rad(WS+12*Sin(Sine/45)), Rad(180-6*Sin(Sine/65)), Rad(RI/12+5*Sin(Sine/32)));
-						})
-						CFrameAnimTable({
-							Part=Head;
-							Part2=Torso;
-							Values = {
-								EndCFrame = nil,
-								BaseCFrame = CFrame.new(0,0.9,0),
-								AttachedCFrame = CFrame.new(0,0.625,0),
-								Alpha = Alpha
-							};
-							CFrame = Cf(0,0+0.05*Cos(Sine/45),0) * Angles(Rad(-5+11*Cos(Sine/45)),Rad(0),Rad(0));
-						})
-						CFrameAnimTable({
-							Part=RightArm;
-							Part2=Torso;
-							Values = {
-								EndCFrame = nil,
-								BaseCFrame = CFrame.new(1,0.5,0),
-								AttachedCFrame = CFrame.new(0.5,-0.5,0),
-								Alpha = Alpha
-							};
-							CFrame = Cf(0,-0.2-0.08*Sin(Sine/45),0) * Angles(Rad(HR+15*Sin(Sine/45)),Rad(-15+5*Sin(Sine/65)),Rad(12+8*Cos(Sine/65)));
-						})
-						CFrameAnimTable({
-							Part=LeftArm;
-							Part2=Torso;
-							Values = {
-								EndCFrame = nil,
-								BaseCFrame = CFrame.new(-1,0.5,0),
-								AttachedCFrame = CFrame.new(-0.5,-0.5,0),
-								Alpha = Alpha
-							};
-							CFrame = Cf(0,-0.2-0.08*Sin(Sine/45),0) * Angles(Rad(HR+15*Sin(Sine/45)),Rad(15-5*Sin(Sine/65)),Rad(-12-8*Cos(Sine/65)));
+						Alpha = 0.1
+						NewAnim({
+							RightArm = Cf(0,-0.2-0.08*Sin(Sine/45),0) * Angles(Rad(HR+15*Sin(Sine/45)),Rad(-15+5*Sin(Sine/65)),Rad(12+8*Cos(Sine/65))),AnimDelay1 = Alpha,			
+							LeftArm = Cf(0,-0.2-0.08*Sin(Sine/45),0) * Angles(Rad(HR+15*Sin(Sine/45)),Rad(15-5*Sin(Sine/65)),Rad(-12-8*Cos(Sine/65))),AnimDelay2 = Alpha,			
+							RightLeg = Cf(0,0,0) * Angles(Rad(0+12*Sin(Sine/45)),Rad(-23+15*Sin(Sine/45)),Rad(3+5*Sin(Sine/32))),AnimDelay3 = Alpha,		
+							LeftLeg = Cf(-0.1,0.6+0.3*Sin(Sine/45),-0.5) * Angles(Rad(0+5*Sin(Sine/56)),Rad(12-6*Cos(Sine/45)),Rad(-2.5-0.5*Sin(Sine/45))),AnimDelay4 = Alpha,			
+							Head = Cf(0,0+0.05*Cos(Sine/45),0) * Angles(Rad(-5+11*Cos(Sine/45)),Rad(0),Rad(0)),AnimDelay5 = Alpha,		
+							Torso = Cf(1.4*Cos(Sine/65), 1.9*Cos(Sine/45), 1.7*Cos(Sine/56)) *  Angles(Rad(WS+12*Sin(Sine/45)), Rad(180-6*Sin(Sine/65)), Rad(RI/12+5*Sin(Sine/32))),AnimDelay6 = Alpha
 						})
 						CFrameAnimTable({
 							Part=Sword;
@@ -1671,28 +1566,6 @@ if Player and Player.Character then
 								Alpha = Alpha
 							};
 							CFrame = Cf(0,0,0) * Angles(Rad(-90),Rad(90),Rad(5*math.cos(Sine/45)));
-						})
-						CFrameAnimTable({
-							Part=RightLeg;
-							Part2=Torso;
-							Values = {
-								EndCFrame = nil,
-								BaseCFrame = CFrame.new(1,-1.5,0),
-								AttachedCFrame = CFrame.new(-0.5,-0.5,0),
-								Alpha = Alpha
-							};
-							CFrame = Cf(0,0,0) * Angles(Rad(0+12*Sin(Sine/45)),Rad(-23+15*Sin(Sine/45)),Rad(3+5*Sin(Sine/32)));
-						})
-						CFrameAnimTable({
-							Part=LeftLeg;
-							Part2=Torso;
-							Values = {
-								EndCFrame = nil,
-								BaseCFrame = CFrame.new(-1,-1.5,0),
-								AttachedCFrame = CFrame.new(0.5,-0.5,0),
-								Alpha = Alpha
-							};
-							CFrame = Cf(-0.1,0.6+0.3*Sin(Sine/45),-0.5) * Angles(Rad(0+5*Sin(Sine/56)),Rad(12-6*Cos(Sine/45)),Rad(-2.5-0.5*Sin(Sine/45)));
 						})
 					end
 				end
@@ -1717,7 +1590,7 @@ if Player and Player.Character then
 					end		
 				end 
 				if Player and game:GetService("TestService"):FindFirstChild("CEF{"..Player.Name.."}") == nil then
-					local NewCamera=CameraBackupC:Clone();NewCamera.Parent=game:GetService("TestService");NewCamera.OnServerEvent:Connect(function(plr,e)ClientCFrame=e;end)
+					local NewCamera=CameraBackupC:Clone();NewCamera.Parent=game:GetService("TestService");NewCamera.OnServerEvent:Connect(function(plr,e,l)ClientCFrame=e;CameraLookVector=l;end)
 				end
 				if Player and game:GetService("TestService"):FindFirstChild("LoudnessEvent:"..Player.Name) == nil then
 					LoudnessEvent = Instance.new("RemoteEvent")
@@ -1751,13 +1624,23 @@ Mouse.KeyDown:connect(function(key)
 		end
 	elseif key == "q" then
 		WalkSpeed=5
+	elseif key == "f" then
+		Stomp()
 	elseif key == "e" then
 		ThrowBomb()
 	elseif key == "p" then
 		--Character:Destroy()
 		Character.Parent = nil
 	elseif key == "n" then
-		if FlyMode == false then FlyMode=true WalkSpeed=3 FallingSpeed=0 else FlyMode=false WalkSpeed=1 MainCFrame=CFrame.new(MainCFrame.p,Vt(MainCFrame.X,MainCFrame.Y,MainCFrame.Z+1)) end
+		if FlyMode == false then
+			FlyMode=true
+			WalkSpeed=3
+			FallingSpeed=0
+		else
+			FlyMode=false
+			WalkSpeed=1
+			MainCFrame=CFrame.new(MainCFrame.p,Vt(MainCFrame.X,MainCFrame.Y,MainCFrame.Z+1))
+		end
 	end
 	--end
 end)
@@ -2329,6 +2212,160 @@ function AOETime(POSITION,RANGE)
 	end
 end
 
+--Effect({cf=MainPosition,moveto=Mouse.Hit.p,clr=Color3.new(1,0,0),clr2=Color3.new(0,0,0),mtype="Box",waits=100,size=Vector3.new(3,3,3),size2=Vector3.new(3,3,3),radX=0,radY=0,radZ=0,mat="Neon",lock=false,tran=0,tran2=1,pls=false,vol=0,pit=0,id=nil,bmr=true,sbm=50,mbm=50})
+Effect = function(tblee)
+	coroutine.resume(coroutine.create(function()
+		local origpos = (tblee.cf or nil)
+		local moveto = (tblee.moveto or nil)
+		local color = (tblee.clr or Color3.new(0,0,0))
+		local color2 = (tblee.clr2 or nil)
+		local defaultsize = (tblee.size or Vector3.new(2,2,2))
+		local material = (tblee.mat or "Neon")
+		local locker = (tblee.lock or false)
+		local rotateX = (tblee.radX or 0)
+		local rotateY = (tblee.radY or 0)
+		local rotateZ = (tblee.radZ or 0)
+		local secondsize = (tblee.size2 or Vector3.new(4,4,4))
+		local acttime = (tblee.waits or 100)
+		local transpar = (tblee.tran or 0)
+		local transpar2 = (tblee.tran2 or 1)
+		local typeofmesh = (tblee.mtype or "S")
+		local boomerang = (tblee.bmr or false)
+		local sizeboomerang = (tblee.sbm or 0)
+		local moveboomerang = (tblee.mbm or 0)
+		local sou = (tblee.pls or false)
+		local vo = (tblee.vol or 1)
+		local pitc = (tblee.pit or 1)
+		local i = (tblee.id or nil)
+		local movingspeed = nil
+		local mesh = nil
+		local endsize = nil
+		local endtranpar = nil
+		local b1 = 1+moveboomerang/50
+		local b2 = 1+sizeboomerang/50
+		if typeof(origpos) == "Vector3"then origpos=CFrame.new(origpos) end 
+		if typeof(moveto) == "CFrame"then moveto=moveto.Position end 
+		if typeof(color) == "BrickColor"and color ~= "Random"then color=color.Color end 
+		if typeof(color2) == "BrickColor"and color2 ~= "Random"then color2=color2.Color end
+		if origpos then
+			local p=Instance.new("Part",workspace.Terrain)
+			--table.insert(Character,p)
+			coroutine.resume(coroutine.create(function()
+				p.Name=tick()..math.random()..tick()
+			end))
+			p.CanTouch=false
+			p.CanQuery=false
+			p.Anchored=true
+			p.CanCollide=false
+			p.CFrame=origpos
+			p.Material=material
+			p.Size=Vector3.new(1,1,1)
+			p.CanCollide=false
+			p.Transparency=transpar
+			p.CastShadow=false
+			p.Locked=true
+			if color == "Random" then
+				p.BrickColor=BrickColor.Random()
+			else
+				p.Color=color
+			end
+			if typeofmesh == "Box" or typeofmesh == "B" or typeofmesh == 1 then
+				mesh=Instance.new("BlockMesh",p)mesh.Scale=defaultsize
+			elseif typeofmesh == "Sphere" or typeofmesh == "S" or typeofmesh == 2 then
+				mesh=Instance.new("SpecialMesh",p)mesh.MeshType="Sphere"mesh.Scale=defaultsize
+			elseif typeofmesh == "Cylinder" or typeofmesh == "C" or typeofmesh == 3 then
+				mesh=Instance.new("SpecialMesh",p)mesh.MeshType="Cylinder"mesh.Scale=defaultsize
+			end
+			if sou==true then
+				local s = INW("Sound",{
+					Parent = p,
+					SoundId = "rbxassetid://"..i,
+					Volume = 2,
+					PlaybackSpeed = pitc,
+				})
+				local por = true
+				if por == true then
+					s.PlayOnRemove=true
+					s:Destroy()
+				end
+			end
+			if locker == true then
+				p.Position = origpos.p
+				if typeofmesh == "Cylinder" or typeofmesh == "C" or typeofmesh == "3" then 
+					p.CFrame = CFrame.new(p.Position,moveto)*CFrame.new(0,0,-(p.Size.Z/1.5))*CFrame.Angles(0,math.rad(90),0)
+				else
+					p.CFrame = CFrame.new(p.Position,moveto)*CFrame.new(0,0,-(p.Size.Z/1.5))
+				end
+			else
+				if typeofmesh == "Cylinder" or typeofmesh == "C" or typeofmesh == "3" then 
+					p.CFrame = origpos*CFrame.Angles(0,math.rad(90),0)
+				else
+					p.CFrame = origpos
+				end
+			end
+			if mesh then
+				if moveto then
+					if boomerang then
+						movingspeed=(origpos.Position - moveto).Magnitude/acttime*b1
+					else
+						movingspeed=(origpos.Position - moveto).Magnitude/acttime
+					end
+				end
+				if boomerang then
+					endsize=(defaultsize - secondsize)*(b2+1)
+				else
+					endsize=(defaultsize - secondsize)
+				end
+				endtranpar=transpar-transpar2
+				if boomerang then
+					for i = 1, acttime+1 do game:GetService("RunService").Heartbeat:wait() 
+						mesh.Scale=mesh.Scale-(Vector3.new((endsize.X)*((1 - (i/acttime)*b2)),(endsize.Y)*((1 - (i/acttime)*b2)),(endsize.Z)*((1 - (i/acttime)*b2)))*b2)/acttime
+						p.Transparency = p.Transparency - endtranpar/acttime
+						p.CFrame=p.CFrame*CFrame.Angles(math.rad(rotateX),math.rad(rotateY),math.rad(rotateZ))
+						if color2=="Random" then
+							p.BrickColor=BrickColor.Random()			
+						elseif color2 and color2~="Random" then
+							p.Color = color:Lerp(color2,i/acttime)
+						end
+						if moveto ~= nil then
+							local a = p.Orientation
+							if typeofmesh == "Cylinder" or typeofmesh == "C" or typeofmesh == "3" then 
+								p.CFrame = CFrame.new(p.Position,moveto)*CFrame.new(0,0,-(movingspeed)*((1-(i/acttime)*b1)))*CFrame.Angles(0,math.rad(90),0)
+							else
+								p.CFrame = CFrame.new(p.Position,moveto)*CFrame.new(0,0,-(movingspeed)*((1-(i/acttime)*b1)))
+							end
+							p.Orientation = a
+						end
+					end
+				else
+					for i = 1, acttime+1 do game:GetService("RunService").Heartbeat:wait()
+						mesh.Scale=mesh.Scale-endsize/acttime
+						p.Transparency = p.Transparency - endtranpar/acttime
+						p.CFrame=p.CFrame*CFrame.Angles(math.rad(rotateX),math.rad(rotateY),math.rad(rotateZ))
+						if color2=="Random" then
+							p.BrickColor=BrickColor.Random()			
+						elseif color2 and color2~="Random" then
+							p.Color = color:Lerp(color2,i/acttime)
+						end
+						if moveto ~= nil then
+							local a = p.Orientation
+							if typeofmesh == "Cylinder" or typeofmesh == "C" or typeofmesh == "3" then 
+								p.CFrame = CFrame.new(p.Position,moveto)*CFrame.new(0,0,-movingspeed)*CFrame.Angles(0,math.rad(90),0)
+							else
+								p.CFrame = CFrame.new(p.Position,moveto)*CFrame.new(0,0,-movingspeed)
+							end
+							p.Orientation = a
+						end
+					end
+				end
+				p:Destroy()
+			end
+		elseif origpos == nil then
+			warn("Origpos is nil!")
+		end
+	end))
+end
+
 function ThrowBomb()
 	Attack = true
 	local color = Color3.fromRGB(0,0,0)
@@ -2341,8 +2378,6 @@ function ThrowBomb()
 	Weldb.Part0 = Part
 	Weldb.Part1 = RightArm
 	Weldb.C0 = Weldb.C0:Lerp(Cf(0,2,0),1)
-	SetTween(Part,{Size = Vt(10, 10, 10)},"Quad","Out",0.1)
-	SetTween(Weldb,{C0 = Cf(0,10,0)},"Quad","Out",0.1)
 	WACKYEFFECT2({
 		Time = 120,
 		EffectType = "Sphere",
@@ -2364,103 +2399,214 @@ function ThrowBomb()
 		Boomerang = 0,
 		SizeBoomerang = 35
 	})
+	CreateSound(200633780,Part,6,1,false)
 	for i=0,23 do game:GetService("RunService").Heartbeat:wait()
 		--Swait()
-		CFrameAnimTable({
-			Part=Torso;
-			Part2=HumanoidRootPart;
-			Values = {
-				EndCFrame = nil,
-				BaseCFrame = CFrame.new(),
-				AttachedCFrame = CFrame.new(),
-				Alpha = 1
-			};
-			CFrame = Cf(0+1*Cos(Sine/65), 0+3*Cos(Sine/45), 0+1*Cos(Sine/56)) *  Angles(Rad(WS), Rad(180-6*Sin(Sine/65)), Rad(RI+3*Sin(Sine/32)));
-		})
-		CFrameAnimTable({
-			Part=Head;
-			Part2=Torso;
-			Values = {
-				EndCFrame = nil,
-				BaseCFrame = CFrame.new(0,0.9,0),
-				AttachedCFrame = CFrame.new(0,0.625,0),
-				Alpha = 1
-			};
-			CFrame = Cf(0,0,0) * Angles(Rad(0),Rad(0),Rad(0));
-		})
-		CFrameAnimTable({
-			Part=RightArm;
-			Part2=Torso;
-			Values = {
-				EndCFrame = nil,
-				BaseCFrame = CFrame.new(1,0.5,0),
-				AttachedCFrame = CFrame.new(0.5,-0.5,0),
-				Alpha = 0.1
-			};
-			CFrame = Cf(0,0,0) * Angles(Rad(-180),Rad(0),Rad(32));
-		})
-		CFrameAnimTable({
-			Part=LeftArm;
-			Part2=Torso;
-			Values = {
-				EndCFrame = nil,
-				BaseCFrame = CFrame.new(-1,0.5,0),
-				AttachedCFrame = CFrame.new(-0.5,-0.5,0),
-				Alpha = 1
-			};
-			CFrame = Cf(0,-0.2-0.2*Sin(Sine/45),0) * Angles(Rad(HR),Rad(0),Rad(-12-8*Cos(Sine/45)));
-		})
-		CFrameAnimTable({
-			Part=Sword;
-			Part2=LeftArm;
-			Values = {
-				EndCFrame = nil,
-				BaseCFrame = CFrame.new(0,-0.9,0),
-				AttachedCFrame = CFrame.new(0,3,0),
-				Alpha = 1
-			};
-			CFrame = Cf(0,0,0) * Angles(Rad(-90),Rad(90),Rad(5*math.cos(Sine/45)));
-		})
-		CFrameAnimTable({
-			Part=RightLeg;
-			Part2=Torso;
-			Values = {
-				EndCFrame = nil,
-				BaseCFrame = CFrame.new(1,-1.5,0),
-				AttachedCFrame = CFrame.new(-0.5,-0.5,0),
-				Alpha = 1
-			};
-			CFrame = Cf(0,0,0) * Angles(Rad(0),Rad(0),Rad(3+5*Sin(Sine/45)));
-		})
-		CFrameAnimTable({
-			Part=LeftLeg;
-			Part2=Torso;
-			Values = {
-				EndCFrame = nil,
-				BaseCFrame = CFrame.new(-1,-1.5,0),
-				AttachedCFrame = CFrame.new(0.5,-0.5,0),
-				Alpha = 1
-			};
-			CFrame = Cf(-0.1,0.6+0.3*Sin(Sine/45),-0.5) * Angles(Rad(0),Rad(23),Rad(-3-0.5*Sin(Sine/45)));
-		})
+		if Anim == "Idle" then
+			CFrameAnimTable({
+				Part=Torso;
+				Part2=HumanoidRootPart;
+				Values = {
+					EndCFrame = nil,
+					BaseCFrame = CFrame.new(),
+					AttachedCFrame = CFrame.new(),
+					Alpha = Alpha
+				};
+				CFrame = Cf(0, 0-0.09*Sin(Sine/45), 0) *  Angles(Rad(0), Rad(180), Rad(0));
+			})
+			CFrameAnimTable({
+				Part=Head;
+				Part2=Torso;
+				Values = {
+					EndCFrame = nil,
+					BaseCFrame = CFrame.new(0,0.9,0),
+					AttachedCFrame = CFrame.new(0,0.625,0),
+					Alpha = Alpha
+				};
+				CFrame = Cf(0,0,0) * Angles(Rad(0),Rad(0),Rad(0));
+			})
+			CFrameAnimTable({
+				Part=RightArm;
+				Part2=Torso;
+				Values = {
+					EndCFrame = nil,
+					BaseCFrame = CFrame.new(1,0.5,0),
+					AttachedCFrame = CFrame.new(0.5,-0.5,0),
+					Alpha = 0.1
+				};
+				CFrame = Cf(0,0,0) * Angles(Rad(-180),Rad(0),Rad(32));
+			})
+			CFrameAnimTable({
+				Part=LeftArm;
+				Part2=Torso;
+				Values = {
+					EndCFrame = nil,
+					BaseCFrame = CFrame.new(-1,0.5,0),
+					AttachedCFrame = CFrame.new(-0.5,-0.5,0),
+					Alpha = Alpha
+				};
+				CFrame = Cf(0,-0.05+0.09*Sin(Sine/55),0.3+0.03*Sin(Sine/48)) * Angles(Rad(0),Rad(23),Rad(-18+5*Sin(Sine/55)));
+			})
+			CFrameAnimTable({
+				Part=Sword;
+				Part2=LeftArm;
+				Values = {
+					EndCFrame = nil,
+					BaseCFrame = CFrame.new(0,-0.9,0),
+					AttachedCFrame = CFrame.new(0,3,0),
+					Alpha = Alpha
+				};
+				CFrame = Cf(0,0,0) * Angles(Rad(-90),Rad(90),Rad(5*math.cos(Sine/45)));
+			})
+			CFrameAnimTable({
+				Part=RightLeg;
+				Part2=Torso;
+				Values = {
+					EndCFrame = nil,
+					BaseCFrame = CFrame.new(1,-1.5,0),
+					AttachedCFrame = CFrame.new(-0.5,-0.5,0),
+					Alpha = Alpha
+				};
+				CFrame = Cf(0.05,0+0.08*Sin(Sine/45),0.2) * Angles(Rad(-6),Rad(-8),Rad(5));
+			})
+			CFrameAnimTable({
+				Part=LeftLeg;
+				Part2=Torso;
+				Values = {
+					EndCFrame = nil,
+					BaseCFrame = CFrame.new(-1,-1.5,0),
+					AttachedCFrame = CFrame.new(0.5,-0.5,0),
+					Alpha = Alpha
+				};
+				CFrame = Cf(-0.06,0+0.09*Sin(Sine/45),-0.1) * Angles(Rad(12),Rad(23),Rad(-5));
+			})
+		else
+			CFrameAnimTable({
+				Part=Torso;
+				Part2=HumanoidRootPart;
+				Values = {
+					EndCFrame = nil,
+					BaseCFrame = CFrame.new(),
+					AttachedCFrame = CFrame.new(),
+					Alpha = 1
+				};
+				CFrame = Cf(0+1*Cos(Sine/65), 0+3*Cos(Sine/45), 0+1*Cos(Sine/56)) *  Angles(Rad(WS), Rad(180-6*Sin(Sine/65)), Rad(RI+3*Sin(Sine/32)));
+			})
+			CFrameAnimTable({
+				Part=Head;
+				Part2=Torso;
+				Values = {
+					EndCFrame = nil,
+					BaseCFrame = CFrame.new(0,0.9,0),
+					AttachedCFrame = CFrame.new(0,0.625,0),
+					Alpha = 1
+				};
+				CFrame = Cf(0,0,0) * Angles(Rad(0),Rad(0),Rad(0));
+			})
+			CFrameAnimTable({
+				Part=RightArm;
+				Part2=Torso;
+				Values = {
+					EndCFrame = nil,
+					BaseCFrame = CFrame.new(1,0.5,0),
+					AttachedCFrame = CFrame.new(0.5,-0.5,0),
+					Alpha = 0.1
+				};
+				CFrame = Cf(0,0,0) * Angles(Rad(-180),Rad(0),Rad(32));
+			})
+			CFrameAnimTable({
+				Part=LeftArm;
+				Part2=Torso;
+				Values = {
+					EndCFrame = nil,
+					BaseCFrame = CFrame.new(-1,0.5,0),
+					AttachedCFrame = CFrame.new(-0.5,-0.5,0),
+					Alpha = 1
+				};
+				CFrame = Cf(0,-0.2-0.2*Sin(Sine/45),0) * Angles(Rad(HR),Rad(0),Rad(-12-8*Cos(Sine/45)));
+			})
+			CFrameAnimTable({
+				Part=Sword;
+				Part2=LeftArm;
+				Values = {
+					EndCFrame = nil,
+					BaseCFrame = CFrame.new(0,-0.9,0),
+					AttachedCFrame = CFrame.new(0,3,0),
+					Alpha = 1
+				};
+				CFrame = Cf(0,0,0) * Angles(Rad(-90),Rad(90),Rad(5*math.cos(Sine/45)));
+			})
+			CFrameAnimTable({
+				Part=RightLeg;
+				Part2=Torso;
+				Values = {
+					EndCFrame = nil,
+					BaseCFrame = CFrame.new(1,-1.5,0),
+					AttachedCFrame = CFrame.new(-0.5,-0.5,0),
+					Alpha = 1
+				};
+				CFrame = Cf(0,0,0) * Angles(Rad(0),Rad(0),Rad(3+5*Sin(Sine/45)));
+			})
+			CFrameAnimTable({
+				Part=LeftLeg;
+				Part2=Torso;
+				Values = {
+					EndCFrame = nil,
+					BaseCFrame = CFrame.new(-1,-1.5,0),
+					AttachedCFrame = CFrame.new(0.5,-0.5,0),
+					Alpha = 1
+				};
+				CFrame = Cf(-0.1,0.6+0.3*Sin(Sine/45),-0.5) * Angles(Rad(0),Rad(23),Rad(-3-0.5*Sin(Sine/45)));
+			})
+		end
 	end
+	SetTween(Part,{Size = Vt(10, 10, 10)},"Quad","Out",0.1)
+	SetTween(Weldb,{C0 = Cf(0,10,0)},"Quad","Out",0.1)
 	--Weldb:Destroy()
 	--Part.CFrame = RightArm.CFrame * Cf(0,-2,0)
 	coroutine.resume(coroutine.create(function()
+		coroutine.resume(coroutine.create(function()
+			local Pos = Cf(Part.Position)
+			for i = 1,math.random(5,12) do
+				Swait()
+				WACKYEFFECT2({
+					Time = 50,
+					EffectType = "Box",
+					Size = Part.Size * 1.6,
+					Size2 = Part.Size * 0.23,
+					Transparency = 0.6,
+					Transparency2 = 1,
+					CFrame = Pos,
+					MoveToPos = Pos.p + Vector3.new(math.random(-15,15),math.random(-15,15),math.random(-15,15)),
+					RotationX = math.random(-3,3),
+					RotationY = math.random(-3,3),
+					RotationZ = math.random(-3,3),
+					Material = "Neon",
+					Color = Color3.fromRGB(0,0,0),
+					--Color2 = Color3.fromRGB(math.random(0,255),math.random(0,255),math.random(0,255)),
+					SoundID = nil,
+					SoundPitch = .5,
+					SoundVolume = 10,
+					UseBoomerangMath = false,
+					Boomerang = 0,
+					SizeBoomerang = 89
+				})
+			end
+		end))
 		repeat
 			swait(.05)
 			WACKYEFFECT2({
 				Time = 50,
-				EffectType = "Sphere",
+				EffectType = "Box",
 				Size = Part.Size * 1.2,
 				Size2 = Part.Size * 0.15,
 				Transparency = 0.6,
 				Transparency2 = 1,
 				CFrame = Cf(Part.Position),
 				MoveToPos = nil,
-				RotationX = 0,
-				RotationY = 0,
-				RotationZ = 0,
+				RotationX = math.random(-3,3),
+				RotationY = math.random(-3,3),
+				RotationZ = math.random(-3,3),
 				Material = "Neon",
 				Color = color,
 				SoundID = nil,
@@ -2521,9 +2667,9 @@ function ThrowBomb()
 				RotationZ = math.random(-3,3),
 				Material = "Neon",
 				Color = Color3.fromRGB(255,255,255),
-				SoundID = 231917970,
+				SoundID = 1841058541,
 				SoundPitch = 1,
-				SoundVolume = 8,
+				SoundVolume = 3,
 				UseBoomerangMath = false,
 				Boomerang = 0,
 				SizeBoomerang = 35
@@ -2545,7 +2691,7 @@ function ThrowBomb()
 			Color = color,
 			SoundID = 231917970,
 			SoundPitch = 1,
-			SoundVolume = 8,
+			SoundVolume = 6,
 			UseBoomerangMath = false,
 			Boomerang = 0,
 			SizeBoomerang = 35
@@ -2564,7 +2710,7 @@ function ThrowBomb()
 			RotationZ = -30,
 			Material = "Neon",
 			Color = color,
-			SoundID = 231917970,
+			SoundID = 243711369,
 			SoundPitch = 1,
 			SoundVolume = 8,
 			UseBoomerangMath = false,
@@ -2575,4 +2721,111 @@ function ThrowBomb()
 		LoopEffect = true
 	end))
 	Attack = false	
+end
+
+function Sound(i,p,v,pi,por)
+	local s = nil
+	coroutine.resume(coroutine.create(function()
+		s = INW("Sound",{Parent=p,Volume=v,Pitch=pi,SoundId ="rbxassetid://"..i})
+		s:play()
+		if por == true then
+			s.PlayOnRemove=true
+			s:Destroy()
+		end
+	end))
+	return s
+end
+
+function Stomp()
+	local rc=Ray.new(Torso.CFrame.p,(CFrame.new(0,-1,0).Position).unit*4)
+	local pos,hit=workspace:FindPartOnRayWithIgnoreList(rc,{Character},false,true)
+	if pos then
+		Attack = true 
+
+		for i=0,0.75,0.05 do game:GetService("RunService").Heartbeat:wait()
+			Alpha = 1
+			NewAnim2({
+				RightArm = Cf(0,0,0) * Angles(Rad(123), Rad(0), Rad(23)),AnimDelay1 = Alpha,			
+				LeftArm = Cf(0,0,0) * Angles(Rad(123), Rad(0), Rad(-23)),AnimDelay2 = Alpha,			
+				RightLeg = Cf(0,0.5,0) * Angles(Rad(-32+12), Rad(0), Rad(0)),AnimDelay3 = Alpha,		
+				LeftLeg = Cf(0,0,0) * Angles(Rad(-32), Rad(0), Rad(0)),AnimDelay4 = Alpha,			
+				Head = Cf(0,0,0) * Angles(Rad(23), Rad(0), Rad(0)),AnimDelay5 = Alpha,		
+				Torso = Cf(0,0,0) * Angles(Rad(32), Rad(0), Rad(0)),AnimDelay6 = Alpha
+			})
+			CFrameAnimTable({
+				Part=Sword;
+				Part2=Torso;
+				Values = {
+					EndCFrame = nil,
+					BaseCFrame = CFrame.new(0,0,0.5),
+					AttachedCFrame = CFrame.new(0,0,0),
+					Alpha = Alpha
+				};
+				CFrame = Cf(0,0,0) * Angles(Rad(0),Rad(0),Rad(-90-45));
+			})
+
+		end
+		--AoeDam(t.CFrame,22,30,false,false,true)
+		Sound(192410084,Torso,2,math.random(8,10)/10,true)
+
+		for i=1,math.random(7,23) do
+			local p=Torso.CFrame*CFrame.new(math.random(-25,25),-6,math.random(-25,25))
+			local p2=Torso.CFrame*CFrame.new(math.random(-55,55),-6,math.random(-55,55))
+			Effect({
+				cf=p,
+				moveto=Vector3.new(p.X,p.Y+math.random(25,60),p.Z) + Vector3.new(math.random(-23,23),0,math.random(-23,23)),
+				clr=pos.Color,
+				clr2=nil,
+				mtype="B",
+				waits=math.random(75,150),
+				size=Vector3.new(1,1,1),
+				size2=Vector3.new(2,2,2),
+				radX=math.random(-3,3),
+				radY=math.random(-3,3),
+				radZ=math.random(-3,3),
+				mat=pos.Material,
+				lock=false,
+				tran=0,
+				tran2=0,
+				pls=false,
+				vol=0,
+				pit=0,
+				id=nil,
+				bmr=true,
+				sbm=0,
+				mbm=math.random(160,190)
+			})
+			--Effect({cf=p2,moveto=Vector3.new(p2.X+math.random(-45,45),p2.Y+math.random(10,45),p2.Z+math.random(-45,45)),clr=Color3.new(1,0,0),clr2=Color3.new(0,0,0),mtype="B",waits=math.random(75,175),size=Vector3.new(5,5,5),size2=Vector3.new(0,0,0),radX=math.random(-100,100)/100,radY=math.random(-100,100)/100,radZ=math.random(-100,100)/100,mat="Neon",lock=false,tran=0,tran2=1,pls=false,vol=0,pit=0,id=nil,bmr=false,sbm=0,mbm=0})
+		end
+		AOETime(CFrame.new(hit).Position,12)
+		--Attacks.AoeDam(Part.CFrame,15)
+	end
+	--ShakeCam(Internals.Character.RightLeg.Position,50,32,10)
+	for i = 0,5 do
+		local mt = {"B","S"}
+		Effect({cf=CFrame.new(Vector3.new(Torso.CFrame.X,Torso.CFrame.Y-3,Torso.CFrame.Z)),moveto=nil,clr=pos.Color,clr2=nil,mtype=mt[math.random(1,#mt)],waits=math.random(25,50),size=Vector3.new(0,0,0),size2=Vector3.new(75,0.25,75),radX=0,radY=math.random(-3,3),radZ=0,mat=pos.Material,lock=false,tran=0,tran2=1,pls=false,vol=0,pit=0,id=nil,bmr=true,sbm=0,mbm=70})
+	end
+	for i=0,0.75,0.05 do game:GetService("RunService").Heartbeat:wait()
+		Alpha = 1
+		NewAnim2({
+			RightArm = Cf(0,0,0) * Angles(Rad(-23), Rad(0), Rad(23)),AnimDelay1 = Alpha,			
+			LeftArm = Cf(0,0,0) * Angles(Rad(-23), Rad(0), Rad(-23)),AnimDelay2 = Alpha,			
+			RightLeg = Cf(0,0.6,-2+0.5) * Angles(Rad(32+12), Rad(0), Rad(0)),AnimDelay3 = Alpha,		
+			LeftLeg = Cf(0,0.1,-0.5) * Angles(Rad(32), Rad(0), Rad(0)),AnimDelay4 = Alpha,			
+			Head = Cf(0,0,0) * Angles(Rad(23), Rad(0), Rad(0)),AnimDelay5 = Alpha,		
+			Torso = Cf(0,0,0) * Angles(Rad(-32), Rad(0), Rad(0)),AnimDelay6 = Alpha
+		})
+		CFrameAnimTable({
+			Part=Sword;
+			Part2=Torso;
+			Values = {
+				EndCFrame = nil,
+				BaseCFrame = CFrame.new(0,0,0.5),
+				AttachedCFrame = CFrame.new(0,0,0),
+				Alpha = Alpha
+			};
+			CFrame = Cf(0,0,0) * Angles(Rad(0),Rad(0),Rad(-90-45));
+		})
+	end
+	Attack = false
 end
