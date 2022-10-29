@@ -1550,7 +1550,7 @@ function system()
 						Alpha = 0.1
 						NewAnim({
 							RightArm = Cf(0,-0.2-0.08*Sin(Sine/45),0) * Angles(Rad(HR+15*Sin(Sine/45)),Rad(-15+5*Sin(Sine/65)),Rad(12+8*Cos(Sine/65))),AnimDelay1 = Alpha,			
-							LeftArm = Cf(0,-0.2-0.08*Sin(Sine/45),0) * Angles(Rad(HR+15*Sin(Sine/45)),Rad(15-5*Sin(Sine/65)),Rad(-12-8*Cos(Sine/65))),AnimDelay2 = Alpha,			
+							LeftArm = Cf(0,-0.2-0.08*Sin(Sine/45),0) * Angles(Rad(HR-18*Sin(Sine/45)+5*Sin(Sine/78)),Rad(15-5*Sin(Sine/65)),Rad(-12-8*Cos(Sine/65))),AnimDelay2 = Alpha,			
 							RightLeg = Cf(0,0,0) * Angles(Rad(0+12*Sin(Sine/45)),Rad(-23+15*Sin(Sine/45)),Rad(3+5*Sin(Sine/32))),AnimDelay3 = Alpha,		
 							LeftLeg = Cf(-0.1,0.6+0.3*Sin(Sine/45),-0.5) * Angles(Rad(0+5*Sin(Sine/56)),Rad(12-6*Cos(Sine/45)),Rad(-2.5-0.5*Sin(Sine/45))),AnimDelay4 = Alpha,			
 							Head = Cf(0,0+0.05*Cos(Sine/45),0) * Angles(Rad(-5+11*Cos(Sine/45)),Rad(0),Rad(0)),AnimDelay5 = Alpha,		
